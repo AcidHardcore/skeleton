@@ -1,0 +1,23 @@
+/// Remove the unit of a length
+/// @param {Number} $number - Number to remove unit from
+/// @return {Number} - Unitless number
+@function strip-unit($number) {
+  @if type-of($number) == 'number' and not unitless($number) {
+    @return $number / ($number * 0 + 1);
+  }
+  @return $number;
+}
+
+//$sizePx - variable in px
+//$htmlFontSize - font size of html element
+@function pxToRem($sizePx, $htmlFontSize: 10) {
+  $remSize: strip-unit($sizePx / $htmlFontSize);
+  @return $remSize * 1rem;
+}
+
+//$sizeRem - variable in rem
+//$htmlFontSize - font size of html element
+@function remToPx($sizeRem, $htmlFontSize: 10) {
+  $pxSize: strip-unit($sizeRem * $htmlFontSize);
+  @return $pxSize * 1px;
+}

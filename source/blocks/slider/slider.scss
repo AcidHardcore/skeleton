@@ -1,0 +1,51 @@
+.slider {
+  background-color: $gray-lighter;
+  &__container {
+    @include container();
+  }
+  &__wrapper {
+    @include row();
+
+  }
+  &__left {
+    @include col(xs, 11);
+    text-align: center;
+    @media (max-width: $screen-xl) {
+
+    }
+    @include col(xl, 5, 11);
+    @media (min-width: $screen-md) {
+
+    }
+    @media (min-width: $screen-xl) {
+
+    }
+  }
+  &__title {
+    @media (max-width: 767px) {
+
+    }
+  }
+  &__desc {
+    @media (min-width: $screen-xl) {
+
+    }
+  }
+  &__paginator {
+    @media (max-width: 767px) {
+      display: none;
+    }
+    @media (min-width: $screen-md) {
+
+    }
+    @include col(xl, 1, 11);
+    align-self: flex-end;
+
+    //another property in additinal.css
+  }
+  &__img {
+    @media (min-width: $screen-xl) {
+
+    }
+  }
+}
