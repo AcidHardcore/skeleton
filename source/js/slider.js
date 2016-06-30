@@ -7,6 +7,7 @@ var sliderReview = Peppermint(document.getElementById('peppermint'), {
     slideshow: true,
     speed: 500,
     slideshowInterval: 5000,
+    cssPrefix: 'peppermint-',
     stopSlideshowAfterInteraction: true,
     dotsContainer: document.querySelector('.slider__paginator')
     //dotsPrepend: true //dots above, false: dots below

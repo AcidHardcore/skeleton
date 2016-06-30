@@ -24,7 +24,8 @@ var gulp = require('gulp'),
     svgmin = require('gulp-svgmin'),
     cheerio = require('gulp-cheerio'),
     svgfallback = require('gulp-svgfallback'),
-    uglify = require('gulp-uglify');
+    uglify = require('gulp-uglify'),
+    svg2png = require('gulp-svg2png');
 
 // Запуск `NODE_ENV=production npm start [задача]` приведет к сборке без sourcemaps
 const isDev = !process.env.NODE_ENV || process.env.NODE_ENV == 'dev';
@@ -32,10 +33,10 @@ const isDev = !process.env.NODE_ENV || process.env.NODE_ENV == 'dev';
 //SASS comb
 gulp.task('comb', function () {
     console.log('---------- SASS combing');
-    return gulp.src('./source/sass/blocks/*.scss', {since: gulp.lastRun('comb')}) // only  files were change
+    return gulp.src('./source/**/*.scss', {since: gulp.lastRun('comb')}) // only  files were change
         .pipe(csscomb())
         .pipe(debug({title: "cssComb:"}))
-        .pipe(gulp.dest('./source/sass/blocks/'))
+        .pipe(gulp.dest('./source/'))
         .pipe(debug({title: "sass combed:"}));
 });
 //  SASS compilation
@@ -110,15 +111,17 @@ gulp.task('svgstore', function () {
         .pipe(svgstore({inlineSvg: true}))
         .pipe(cheerio(function ($) {
             $('svg').attr('style', 'display:none');
-
-            //$('[fill]').removeAttr('fill');       //three strings need to test
-            //$('[stroke]').removeAttr('stroke');
-            //$('[style]').removeAttr('style');
-
         }))
         .pipe(rename('sprite-svg--ls.svg'))
         .pipe(gulp.dest('./build/img/'))
         .pipe(debug({title: "SVG-sprite:"}));
+});
+// SVG to PNG - wait some amends from author https://github.com/akoenig/gulp-svg2png/issues/22
+gulp.task('svg2png', function () {
+    console.log('---------- SVG2PNG processing');
+    return gulp.src('./source/img/*.svg')
+        .pipe(svg2png())
+        .pipe(gulp.dest('./build/img/'));
 });
 
 // concatenate and uglify JS
@@ -143,22 +146,22 @@ gulp.task('js', function () {
 });
 
 // Compile SVG fallback sprite
-gulp.task('svgfallback', function () {
+/*gulp.task('svgfallback', function () {
     console.log('---------- Compile SVG fall back sprite');
     return gulp
-        .src('./source/img/*.svg')
+        .src('./source/img/!*.svg')
         .pipe(svgfallback())
         .pipe(gulp.dest('./build/test/'))
         .pipe(debug({title: "SVG fall back sprite:"}));
-});
+});*/
 
-//Coping html files
-// gulp.task('html', function () {
-//     console.log('---------- Coping html files');
-//     return gulp.src('./source/*.html', {since: gulp.lastRun('html')})
-//         .pipe(gulp.dest('./build/'))
-//         .pipe(debug({title: "html:"}));
-// });
+//Coping font files
+gulp.task('font', function () {
+    console.log('---------- Coping font files');
+    return gulp.src('./source/font/*.{woff,woff2}', {since: gulp.lastRun('font')})
+        .pipe(gulp.dest('./build/font/'))
+        .pipe(debug({title: "font:"}));
+});
 
 //Assembly html files
 gulp.task('html', function() {
@@ -181,6 +184,7 @@ gulp.task('watch', function () {
     gulp.watch('./source/**/**/*.html', gulp.series('html'));
     gulp.watch('./source/js/*.js', gulp.series('js'));
     gulp.watch('./source/img/*.{jpg,jpeg,gif,png,svg}', gulp.series('img'));
+    gulp.watch('./source/font/*.{woff,woff2}', gulp.series('font'));
 });
 
 //browser synchronisation
@@ -195,6 +199,7 @@ gulp.task('serve', function () {
     browserSync.watch('./build/js/*.js').on('change', browserSync.reload);
     browserSync.watch('./build/img/*.*').on('change', browserSync.reload);
     browserSync.watch('./build/*.html').on('change', browserSync.reload);
+    browserSync.watch('./build/font/*.*').on('change', browserSync.reload);
 });
 
 // cleaning of build folder
@@ -206,7 +211,7 @@ gulp.task('clean', function () {
     ]);
 });
 
-//default task - auto running on WebStorm start
+//default task - auto running on Storm start
 gulp.task('default',
     gulp.series('comb', /*gulp.parallel('css', 'img', 'html', 'js'),*/ gulp.parallel('watch', 'serve'))
 );
