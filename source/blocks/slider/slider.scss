@@ -1,51 +1,110 @@
 .slider {
-  background-color: $gray-lighter;
-  &__container {
-    @include container();
-  }
-  &__wrapper {
-    @include row();
+  &__active {
+    position: relative;
 
-  }
-  &__left {
-    @include col(xs, 11);
+    overflow: hidden;
+
     text-align: center;
-    @media (max-width: $screen-xl) {
-
-    }
-    @include col(xl, 5, 11);
-    @media (min-width: $screen-md) {
-
-    }
-    @media (min-width: $screen-xl) {
-
-    }
   }
-  &__title {
-    @media (max-width: 767px) {
 
-    }
+  &__active &__slides {
+    position: relative;
+
+    overflow: hidden; /* clearfix */
+
+    touch-action: pan-y;
   }
-  &__desc {
-    @media (min-width: $screen-xl) {
 
-    }
+  &__active &__slides > * {
+    float: left;
+
+    margin: 0;
+
+    -webkit-tap-highlight-color: transparent;
   }
-  &__paginator {
-    @media (max-width: 767px) {
-      display: none;
-    }
-    @media (min-width: $screen-md) {
 
-    }
-    @include col(xl, 1, 11);
-    align-self: flex-end;
-
-    //another property in additinal.css
+  &__active &__slides a:active,
+  &__active &__slides a:active img {
+    outline: none;
   }
-  &__img {
-    @media (min-width: $screen-xl) {
 
-    }
+  &__active,
+  &__active &__dots,
+  &__active &__slides,
+  &__active &__slides > * {
+    transform: translate3d(0, 0, 0);
+
+    backface-visibility: hidden;
+  }
+
+  &__mouse &__slides {
+    cursor: move;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
+    user-select: none;
+  }
+
+  &__mouse &__drag &__slides * {
+    cursor: move;
+  }
+
+  /* dots */
+  &__dots {
+    margin: 0;
+    padding: 0;
+
+    list-style-type: none;
+
+  }
+
+  &__dots > li {
+    position: relative;
+
+    display: inline-block;
+
+    width: 12px;
+    height: 12px;
+    padding: 0 15px;
+    padding-top: 50px;
+
+    cursor: pointer;
+    user-select: none;
+    vertical-align: middle;
+
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  &__dots > li &__mouse-clicked,
+  &__dots > li:active,
+  &__dots > li:focus {
+    outline: 0;
+  }
+
+  &__dots > li > span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    display: inline-block;
+
+    width: 8px;
+    height: 8px;
+    margin: -4px 0 0 -4px;
+
+    border-radius: 50%;
+    background: #9b9890;
+  }
+  &__dots > li > span:hover {
+    background-color: #7e868f;
+  }
+
+  &__dots > li &__active-dot > span {
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+
+    border: 3px solid red;
+    background: transparent;
   }
 }
