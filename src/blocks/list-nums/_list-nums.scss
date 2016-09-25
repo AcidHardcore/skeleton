@@ -1,8 +1,5 @@
 // Для импорта в диспетчер подключений: @import './src/blocks/list-nums/list-nums.less';
 
-@import '../../less/variables.less';     // только для удобства обращения к переменным
-
-
 .list-nums {
   list-style: none;
   padding-left: 0;
@@ -40,7 +37,7 @@
       height: 1.9em;
       line-height: 2em;
       color: #fff;
-      background-color: @gray-light;
+      background-color: $gray-light;
       border-radius: 50%;
       text-align: center;
     }

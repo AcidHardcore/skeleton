@@ -1,8 +1,5 @@
 // Для импорта в диспетчер подключений: @import './src/blocks/list-bullet/list-bullet.less';
 
-@import '../../less/variables.less';     // только для удобства обращения к переменным
-
-
 .list-bullet {
   list-style: none;
 
@@ -18,7 +15,7 @@
       width: 0.5em;
       height: 0.5em;
       border-radius: 50%;
-      background-color: @color-main;
+      background-color: $color-main;
     }
   }
 }

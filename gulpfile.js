@@ -224,7 +224,7 @@ gulp.task('clean', function () {
 
 //build task - run all producing tasks
 gulp.task('build',
-    gulp.series( gulp.parallel('css', 'copy:css', 'img', 'html', 'js'))
+    gulp.series( gulp.parallel('css', 'copy:css', 'img', 'html', 'js', 'svgstore', 'font'))
 );
 
 //default task - auto running on Storm start

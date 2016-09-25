@@ -1,0 +1,14 @@
+// Для импорта в диспетчер подключений: @import './src/blocks/thumb/thumb.less';
+.thumb {
+  display: inline-block;
+  padding: 0.4rem;
+  line-height: $line-height;
+  background-color: $body-bg;
+  border: 1px solid $gray-light;
+  border-radius: $border-radius;
+  transition: all $transition-time;
+
+  a:hover & {
+    border-color: $link-color;
+  }
+}
