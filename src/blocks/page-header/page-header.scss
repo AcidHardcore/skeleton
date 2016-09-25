@@ -1,0 +1,13 @@
+// Для импорта в диспетчер подключений: @import './src/blocks/page-header/page-header.less';
+@import '../../scss/variables';
+// только для удобства обращения к переменным
+@import "../../scss/mixins/mixins";
+
+.page-header {
+  &__container {
+    @include container();
+  }
+  &__wrapper {
+    @include row();
+  }
+}

@@ -1,0 +1,11 @@
+@import '../../scss/mixins/mixins';
+
+
+.page-footer {
+  &__container {
+    @include container();
+  }
+  &__wrapper {
+    @include row();
+  }
+}

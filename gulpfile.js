@@ -1,10 +1,10 @@
 'use strict';
 
-var gulp = require('gulp'),
+const gulp = require('gulp'),
     sass = require('gulp-sass'),
     cleancss = require('gulp-clean-css'),
     rename = require('gulp-rename'),
-    autoprefixer = require('gulp-autoprefixer'),
+    autoprefixer = require('autoprefixer'),
     replace = require('gulp-replace'),
     sourcemaps = require('gulp-sourcemaps'),
     browserSync = require('browser-sync').create(),
@@ -24,67 +24,81 @@ var gulp = require('gulp'),
     svgmin = require('gulp-svgmin'),
     cheerio = require('gulp-cheerio'),
     svgfallback = require('gulp-svgfallback'),
-    uglify = require('gulp-uglify'),
-    svg2png = require('gulp-svg2png');
+    lessToScss = require('gulp-less-to-scss'),
+    size = require('gulp-size'),
+    mqpacker = require('css-mqpacker'),
+    uglify = require('gulp-uglify');
 
 // Запуск `NODE_ENV=production npm start [задача]` приведет к сборке без sourcemaps
 const isDev = !process.env.NODE_ENV || process.env.NODE_ENV == 'dev';
 
+
 //SASS comb
 gulp.task('comb', function () {
     console.log('---------- SASS combing');
-    return gulp.src('./source/**/*.scss', {since: gulp.lastRun('comb')}) // only  files were change
+    return gulp.src('./src/**/*.scss', {since: gulp.lastRun('comb')}) // only  files were change
         .pipe(csscomb())
         .pipe(debug({title: "cssComb:"}))
-        .pipe(gulp.dest('./source/'))
-        .pipe(debug({title: "sass combed:"}));
+        .pipe(gulp.dest('./src/'))
+        .pipe(debug({title: "scss combed:"}));
 });
-//  SASS compilation
-gulp.task('css', function () {
+
+//LESS2SASS
+gulp.task('lessToScss', function () {
+    return gulp.src('./src/blocks/to-top/*.less') //TODO change it
+        .pipe(lessToScss())
+        .pipe(gulp.dest('./src/blocks/to-top/')); //TODO change it
+});
+
+//  SCSS compilation
+gulp.task('scss', function () {
     console.log('---------- SASS compile');
-    return gulp.src('./source/sass/style.scss')
+    return gulp.src('./src/scss/style.scss')
         .pipe(gulpIf(isDev, sourcemaps.init()))
-        .pipe(debug({title: "SASS:"}))
+        .pipe(debug({title: "SCSS:"}))
         .pipe(sass())
-        .on('error', notify.onError(function (err) {
+        .on('error', notify.onError(function(err){
             return {
                 title: 'Styles compilation error',
                 message: err.message
             }
         }))
-        .pipe(gcmq())
-        .pipe(debug({title: "group media queries:"}))
-        .pipe(autoprefixer({browsers: ['last 2 version']}))
-        .pipe(debug({title: "autoPrefixer:"}))
-        .pipe(gulpIf (!isDev, csscomb()))
-        .pipe(gulpIf (!isDev, debug({title: "cssComb:"})))
+        .pipe(postcss([
+            autoprefixer({browsers: ['last 2 version']}),
+            mqpacker({
+                sort: true
+            }),
+        ]))
         .pipe(gulpIf(!isDev, cleancss()))
-        .pipe(gulpIf(!isDev, debug({title: "cleenCss:"})))
-        .pipe(rename({suffix: '.min'}))
-        .pipe(gulpIf(isDev, sourcemaps.write()))
-        .pipe(gulp.dest('./build/css/'))
-        .pipe(debug({title: "css:"}));
+        .pipe(rename('style.min.css'))
+        .pipe(debug({title: "RENAME:"}))
+        .pipe(gulpIf(isDev, sourcemaps.write('/')))
+        .pipe(size({
+            title: 'size',
+            showFiles: true,
+            showTotal: false,
+        }))
+        .pipe(gulp.dest('./build/css/'));
 });
 
 //copy additional CSS
-gulp.task ('copy:css', function () {
-    console.log('---------- SASS compile');
-    return gulp.src('./source/css/additional.css', {since: gulp.lastRun('copy:css')})
-        .pipe(autoprefixer({browsers: ['last 2 version']}))
-        .pipe(debug({title: "autoPrefixer:"}))
-        .pipe(gulpIf (!isDev, csscomb()))
-        .pipe(gulpIf (!isDev, debug({title: "cssComb:"})))
-        .pipe(gulpIf(!isDev, cleancss()))
-        .pipe(gulpIf(!isDev, debug({title: "cleenCss:"})))
-        .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest('./build/css/'))
-        .pipe(debug({title: "copy:css"}));
+gulp.task('copy:css', function(callback) {
+        console.log('---------- copy CSS');
+        return gulp.src('./src/css/*.css', {since: gulp.lastRun('copy:css')})
+            .pipe(postcss([
+                autoprefixer({browsers: ['last 2 version']}),
+                mqpacker({
+                    sort: true
+                }),
+            ]))
+            .pipe(cleancss())
+            .pipe(gulp.dest('./build/css/'))
 });
 
 // coping and optimisation images
 gulp.task('img', function () {
     // console.log('---------- Copy and optimisation images');
-    return gulp.src('./source/img/*.{jpg,jpeg,gif,png,svg}', {since: gulp.lastRun('img')}) // only new files are change
+    return gulp.src('./src/img/*.{jpg,jpeg,gif,png,svg}', {since: gulp.lastRun('img')}) // only new files are change
         .pipe(newer('./build/img/'))  // keep only new files
         .pipe(imagemin({
             progressive: true,
@@ -98,7 +112,7 @@ gulp.task('img', function () {
 //  SVG-sprite compilation
 gulp.task('svgstore', function () {
     console.log('---------- SVG-sprite compilation');
-    return gulp.src('./source/img/*.svg')
+    return gulp.src('./src/img/*.svg')
         .pipe(svgmin(function (file) {
             return {
                 plugins: [{
@@ -116,19 +130,11 @@ gulp.task('svgstore', function () {
         .pipe(gulp.dest('./build/img/'))
         .pipe(debug({title: "SVG-sprite:"}));
 });
-// SVG to PNG - wait some amends from author https://github.com/akoenig/gulp-svg2png/issues/22
-gulp.task('svg2png', function () {
-    console.log('---------- SVG2PNG processing');
-    return gulp.src('./source/img/*.svg')
-        .pipe(svg2png())
-        .pipe(gulp.dest('./build/img/'));
-});
 
 // concatenate and uglify JS
 gulp.task('js', function () {
         console.log('---------- JS processing');
-    return gulp.src('./source/js/*.js')
-        .pipe(debug({title: "JS:"}))
+        return gulp.src('./src/**/*.js')
             .pipe(gulpIf(isDev, sourcemaps.init()))
             .pipe(concat('script.min.js'))
             .pipe(gulpIf(!isDev, uglify()))
@@ -139,34 +145,35 @@ gulp.task('js', function () {
                 }
             }))
             .pipe(gulpIf(isDev, sourcemaps.write('.')))
-            .pipe(gulpIf(isDev, debug({title: "JS SOURCEMAPS:"})))
-            .pipe(gulp.dest('./build/js/'))
-            .pipe(debug({title: "JS:"}));
-
+            .pipe(size({
+                title: 'Размер',
+                showFiles: true,
+                showTotal: false,
+            }))
+            .pipe(gulp.dest('./build/js/'));
 });
-
 // Compile SVG fallback sprite
-/*gulp.task('svgfallback', function () {
+gulp.task('svgfallback', function () {
     console.log('---------- Compile SVG fall back sprite');
     return gulp
-        .src('./source/img/!*.svg')
+        .src('./src/img/*.svg')
         .pipe(svgfallback())
         .pipe(gulp.dest('./build/test/'))
         .pipe(debug({title: "SVG fall back sprite:"}));
-});*/
+});
 
 //Coping font files
 gulp.task('font', function () {
     console.log('---------- Coping font files');
-    return gulp.src('./source/font/*.{woff,woff2}', {since: gulp.lastRun('font')})
+    return gulp.src('./src/font/*', {since: gulp.lastRun('font')})
         .pipe(gulp.dest('./build/font/'))
         .pipe(debug({title: "font:"}));
 });
 
 //Assembly html files
-gulp.task('html', function() {
+gulp.task('html', function () {
     console.log('---------- Assembly html files');
-    return gulp.src('./source/*.html')
+    return gulp.src('./src/*.html')
         .pipe(fileinclude({
             prefix: '@@',
             basepath: '@file',
@@ -178,21 +185,21 @@ gulp.task('html', function() {
 
 //tracking for changes
 gulp.task('watch', function () {
-    gulp.watch('./source/sass/**/*.scss', gulp.series('css'));
-    gulp.watch('./source/blocks/**/**/*.scss', gulp.series('css'));
-    gulp.watch('./source/css/*.css', gulp.series('copy:css'));
-    gulp.watch('./source/**/**/*.html', gulp.series('html'));
-    gulp.watch('./source/js/*.js', gulp.series('js'));
-    gulp.watch('./source/img/*.{jpg,jpeg,gif,png,svg}', gulp.series('img'));
-    gulp.watch('./source/font/*.{woff,woff2}', gulp.series('font'));
+    gulp.watch('./src/scss/**/*.scss', gulp.series('css'));
+    gulp.watch('./src/blocks/**/**/*.scss', gulp.series('css'));
+    gulp.watch('./src/css/*.css', gulp.series('copy:css'));
+    gulp.watch('./src/**/**/*.html', gulp.series('html'));
+    gulp.watch('./src/**/*.js', gulp.series('js'));
+    gulp.watch('./src/img/*.{jpg,jpeg,gif,png,svg}', gulp.series('img'));
+    gulp.watch('./src/font/*', gulp.series('font'));
 });
 
 //browser synchronisation
 gulp.task('serve', function () {
     browserSync.init({
         server: {
-            baseDir: "./build/"
-            // index: "/build/test.html"   it's need where index.html in the root folder
+            baseDir: "./build/",
+            startPath: 'index.html'
         }
     });
     browserSync.watch('./build/css/*.css').on('change', browserSync.reload);
@@ -213,5 +220,6 @@ gulp.task('clean', function () {
 
 //default task - auto running on Storm start
 gulp.task('default',
-    gulp.series('comb', /*gulp.parallel('css', 'img', 'html', 'js'),*/ gulp.parallel('watch', 'serve'))
+    gulp.series(/*'comb', gulp.parallel('css', 'img', 'html', 'js'),*/ gulp.parallel('watch', 'serve'))
 );
+
