@@ -39,7 +39,8 @@
     "gulp-svgmin": "^1.2.2",
     "gulp-svgstore": "^6.0.0",
     "gulp-uglify": "^1.5.4",
-    "imagemin-pngquant": "^5.0.0"
+    "imagemin-pngquant": "^5.0.0",
+    "sass-inline-image": "0.0.3"
   },
   "config": {
     "directories": {

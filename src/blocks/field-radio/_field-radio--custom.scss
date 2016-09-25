@@ -1,0 +1,40 @@
+// Для импорта в диспетчер подключений: @import './src/blocks/field-radio/field-radio--custom.less';
+
+.field-radio {
+
+  &--custom {
+
+    .field-radio__name {
+      padding-left: 1.6em;
+    }
+
+    .field-radio__help-text {
+      padding-left: round(1.6em * (100 / strip-unit($font-size--small-percent)));
+    }
+
+    .field-radio__input {
+      position: absolute;
+      opacity: 0;
+
+      & + .field-radio__name-text:before {
+        width: 1.13em;
+        height: 1.13em;
+        position: absolute;
+        top: 0.1em;
+        left: 0;
+        content: '';
+        background-size: 1.125em 1.125em;
+        background-repeat: no-repeat;
+        background-image: url(inline-image('/src/blocks/field-radio/img_to_bg/radiobutton.svg')); //work through gulp sass-inline-image
+      }
+
+      &:checked + .field-radio__name-text:before {
+        background-image: url(inline-image('/src/blocks/field-radio/img_to_bg/radiobutton--checked.svg')); //work through gulp sass-inline-image
+      }
+
+      &:focus + .field-radio__name-text:before {
+       @include focus();
+      }
+    }
+  }
+}

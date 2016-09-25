@@ -1,0 +1,11 @@
+// Для импорта в диспетчер подключений: @import './src/blocks/table/table--not-greed.less';
+
+@import '../../scss/variables';     // только для удобства обращения к переменным
+
+
+.table {
+
+  &--not-greed {
+    width: auto;
+  }
+}

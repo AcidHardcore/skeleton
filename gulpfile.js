@@ -27,6 +27,7 @@ const gulp = require('gulp'),
     lessToScss = require('gulp-less-to-scss'),
     size = require('gulp-size'),
     mqpacker = require('css-mqpacker'),
+    sassInlineImage = require('sass-inline-image'),
     uglify = require('gulp-uglify');
 
 // Запуск `NODE_ENV=production npm start [задача]` приведет к сборке без sourcemaps
@@ -51,12 +52,14 @@ gulp.task('lessToScss', function () {
 });
 
 //  SCSS compilation
-gulp.task('scss', function () {
+gulp.task('css', function () {
     console.log('---------- SASS compile');
     return gulp.src('./src/scss/style.scss')
         .pipe(gulpIf(isDev, sourcemaps.init()))
         .pipe(debug({title: "SCSS:"}))
-        .pipe(sass())
+        .pipe(sass({
+            functions: sassInlineImage({ /* options */ })
+        }))
         .on('error', notify.onError(function(err){
             return {
                 title: 'Styles compilation error',
@@ -146,12 +149,13 @@ gulp.task('js', function () {
             }))
             .pipe(gulpIf(isDev, sourcemaps.write('.')))
             .pipe(size({
-                title: 'Размер',
+                title: 'size',
                 showFiles: true,
                 showTotal: false,
             }))
             .pipe(gulp.dest('./build/js/'));
 });
+
 // Compile SVG fallback sprite
 gulp.task('svgfallback', function () {
     console.log('---------- Compile SVG fall back sprite');
@@ -186,12 +190,12 @@ gulp.task('html', function () {
 //tracking for changes
 gulp.task('watch', function () {
     gulp.watch('./src/scss/**/*.scss', gulp.series('css'));
-    gulp.watch('./src/blocks/**/**/*.scss', gulp.series('css'));
+    // gulp.watch('./src/blocks/**/**/*.scss', gulp.series('css'));
     gulp.watch('./src/css/*.css', gulp.series('copy:css'));
     gulp.watch('./src/**/**/*.html', gulp.series('html'));
     gulp.watch('./src/**/*.js', gulp.series('js'));
     gulp.watch('./src/img/*.{jpg,jpeg,gif,png,svg}', gulp.series('img'));
-    gulp.watch('./src/font/*', gulp.series('font'));
+    gulp.watch('./src/font/*.*', gulp.series('font'));
 });
 
 //browser synchronisation
@@ -217,6 +221,11 @@ gulp.task('clean', function () {
         '!' + './build/readme.md'
     ]);
 });
+
+//build task - run all producing tasks
+gulp.task('build',
+    gulp.series( gulp.parallel('css', 'copy:css', 'img', 'html', 'js'))
+);
 
 //default task - auto running on Storm start
 gulp.task('default',
