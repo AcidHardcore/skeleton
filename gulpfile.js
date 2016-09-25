@@ -190,7 +190,7 @@ gulp.task('html', function () {
 //tracking for changes
 gulp.task('watch', function () {
     gulp.watch('./src/scss/**/*.scss', gulp.series('css'));
-    // gulp.watch('./src/blocks/**/**/*.scss', gulp.series('css'));
+    gulp.watch('./src/blocks/**/**/*.scss', gulp.series('css'));
     gulp.watch('./src/css/*.css', gulp.series('copy:css'));
     gulp.watch('./src/**/**/*.html', gulp.series('html'));
     gulp.watch('./src/**/*.js', gulp.series('js'));

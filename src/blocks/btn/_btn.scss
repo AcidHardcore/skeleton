@@ -53,7 +53,7 @@
     background-color: $gray-lighter;
     border-color: $gray-light;
 
-    a & {
+    @at-root a#{&} {
       pointer-events: none;
     }
   }

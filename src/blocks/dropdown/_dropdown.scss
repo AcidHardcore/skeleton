@@ -58,11 +58,11 @@
       right: 0;
     }
 
-    div & {
+    @at-root div#{&} {
       min-width: 26rem;
     }
 
-    ul & {
+    @at-root ul#{&} {
       min-width: 16rem;
       list-style: none;
       padding: 0.3em 0;

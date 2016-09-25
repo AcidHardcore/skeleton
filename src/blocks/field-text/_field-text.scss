@@ -58,7 +58,7 @@
       opacity: 1;
     }
 
-    textarea & {
+    @at-root textarea#{&} {
       height: auto;
       min-height: ($line-height * 2) + strip-unit($field-padding-top) +  strip-unit($field-padding-bottom) + 0.2; // 0.2 — поправка на бордюр
       resize: vertical;

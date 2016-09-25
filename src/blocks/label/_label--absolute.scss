@@ -1,0 +1,12 @@
+// Для импорта в диспетчер подключений: @import './src/blocks/label/label--absolute.less';
+
+.label {
+
+  &--absolute {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+  }
+}

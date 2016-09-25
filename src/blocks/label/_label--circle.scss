@@ -1,0 +1,8 @@
+// Для импорта в диспетчер подключений: @import './src/blocks/label/label--circle.less';
+
+.label {
+
+  &--circle {
+    border-radius: 1.45em;
+  }
+}
