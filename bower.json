@@ -1,6 +1,6 @@
 {
-  "name": "nerds.makeevka.com",
-  "description": "Nerds",
+  "name": "skeleton",
+  "description": "Skeleton",
   "main": "/source/index.html",
   "authors": [
     "vit"

@@ -35,12 +35,15 @@
     "gulp-sass": "^2.3.2",
     "gulp-size": "^2.1.0",
     "gulp-sourcemaps": "^1.6.0",
+    "gulp-stylelint": "^3.3.0",
     "gulp-svgfallback": "^3.0.2",
     "gulp-svgmin": "^1.2.2",
     "gulp-svgstore": "^6.0.0",
     "gulp-uglify": "^1.5.4",
     "imagemin-pngquant": "^5.0.0",
-    "sass-inline-image": "0.0.3"
+    "sass-inline-image": "0.0.3",
+    "stylelint": "^7.3.1",
+    "stylelint-declaration-use-variable": "^1.6.0"
   },
   "config": {
     "directories": {

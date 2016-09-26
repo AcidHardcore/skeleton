@@ -2,19 +2,19 @@
 // var butNext = document.querySelector('.review__next-js');
 
 //create sliderReview
-var sliderReview = Peppermint(document.getElementById('peppermint'), {
-    dots: true,
-    slideshow: true,
-    speed: 500,
-    slideshowInterval: 5000,
-    cssPrefix: 'peppermint-',
-    stopSlideshowAfterInteraction: true,
-    dotsContainer: document.querySelector('.slider__paginator')
+// var sliderReview = Peppermint(document.getElementById('peppermint'), {
+//     dots: true,
+//     slideshow: true,
+//     speed: 500,
+//     slideshowInterval: 5000,
+//     cssPrefix: 'peppermint-',
+//     stopSlideshowAfterInteraction: true,
+//     dotsContainer: document.querySelector('.slider__paginator')
     //dotsPrepend: true //dots above, false: dots below
     // onSetup: function(n) {
     //     console.log('Peppermint setup done. Slides found: ' + n);
     // }
-});
+// });
 
 //sliderReview prev button
 // butPrev.addEventListener('tap', function (event) {

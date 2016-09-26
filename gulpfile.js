@@ -51,6 +51,22 @@ gulp.task('lessToScss', function () {
         .pipe(gulp.dest('./src/blocks/to-top/')); //TODO change it
 });
 
+//Styleint
+gulp.task('lint-css', function lintCssTask() {
+    const gulpStylelint = require('gulp-stylelint');
+
+    return gulp
+        .src('src/scss/*.*')
+        .pipe(gulpStylelint({
+            failAfterError: false,
+            reportOutputDir: 'reports/lint',
+            reporters: [
+                {formatter: 'verbose', console: true},
+                {formatter: 'json', save: 'report.json'},
+            ]
+        }));
+});
+
 //  SCSS compilation
 gulp.task('css', function () {
     console.log('---------- SASS compile');
