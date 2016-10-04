@@ -1,0 +1,30 @@
+.btn--arrow{
+    position: relative;
+    background-color: black;border-radius: 0;
+    border: 0;
+    height: 50px;overflow: visible;
+    color: #fff;
+}
+
+.arrow {
+    position: absolute;
+    right: -100px;
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;
+    border-right: 50px solid transparent;
+
+    border-left: 50px solid black;
+    /*transform: rotate(225deg);*/
+
+}
+
+.btn--arrow:hover {
+    background-color: red;
+    color: #00b3ee;
+}
+
+.btn--arrow:hover  .arrow {
+    border-left-color: red;
+
+}
